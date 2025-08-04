@@ -1,69 +1,99 @@
-# React + TypeScript + Vite
+## Plan
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+🧱 Components
 
-Currently, two official plugins are available:
+- JobList – parent container
+- JobCard – presentational
+- JobSearch – search input
+- JobFilter – filter by location/type
+- SortDropdown – sort by date
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### JobList
 
-## Expanding the ESLint configuration
+Role:
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- Central controller for state + data logic
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Holds:
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+- allJobs (static dataset or fetched)
+- filteredJobs (result after search, filter, sort)
+- searchTerm, activeFilters, sortOrder
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Passes filtered list to JobCard
+
+### JobCard
+
+💡 Pure presentational component
+
+Props:
+
+```ts
+{
+  id: number,
+  title: string,
+  company: string,
+  location: string,
+  type: string,
+  postedAt: string
+}
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Notes:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- Stateless
+- Rendered by JobList
+- Could include data-testid if you test later
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### JobFilter
+
+Props:
+
+- onFilterChange(filters: { location: string[], type: string[] })
+- activeFilters (optional, if you want the parent to control UI state too)
+
+Internal state (optional):
+
+- Local checked state for filters (if not controlled externally)
+
+UI:
+
+- Checkbox group or buttons for:
+- Location: Remote, London, New York, Berlin
+
+Job Type: Full-time, Part-time, Contract
+
+✅ Suggestion: Don't pass the full job list in — just pass filter criteria up. Keep data logic centralized in the parent.
+
+### JobSearch
+
+Props:
+
+- onSearchChange(searchTerm: string)
+- (Optional) searchValue if controlled
+
+UI:
+
+```html
+<input type="text" placeholder="Search by title or company" />
 ```
+
+Notes:
+Consider useDebounce for nicer UX in larger apps
+Use onChange to lift input value up
+
+### SortDropdown
+
+Props:
+
+- onSortChange(order: "asc" | "desc")
+- currentSort (optional)
+
+UI:
+
+- Dropdown or radio/toggle between:
+  - Newest first (desc)
+  - Oldest first (asc)
+
+Notes:
+Keep sorting logic in parent to avoid unnecessary prop drilling
