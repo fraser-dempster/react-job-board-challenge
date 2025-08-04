@@ -14,3 +14,8 @@
   padding: 10px;
   width: 80vw;
 }
+
+.actions {
+  display: flex;
+  column-gap: 20px;
+}

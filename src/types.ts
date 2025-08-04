@@ -8,6 +8,6 @@ export type Job = {
 };
 
 export type Filter = {
-  type?: string[];
-  location?: string[];
+  type?: string;
+  location?: string;
 };

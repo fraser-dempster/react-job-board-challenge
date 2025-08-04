@@ -1,0 +1,10 @@
+.container {
+  display: flex;
+  column-gap: 10px;
+}
+
+.dropdown {
+  display: flex;
+  flex-direction: column;
+  row-gap: 10px;
+}
