@@ -1,7 +1,8 @@
 import type { Job } from "../types";
 import styles from "../styling/JobCard.module.css";
+import { memo } from "react";
 
-function JobCard({ job }: { job: Job }) {
+const JobCard = memo(function JobCard({ job }: { job: Job }) {
   return (
     <div className={styles.container}>
       <h2>{job.title}</h2>
@@ -11,6 +12,6 @@ function JobCard({ job }: { job: Job }) {
       <p>{job.postedAt}</p>
     </div>
   );
-}
+});
 
 export default JobCard;
